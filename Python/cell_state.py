@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from scipy.optimize import fsolve
 
+'''
 def convolution(Z, x, y):
     up = (x + len(Z[x]) + 1) % len(Z[x])
     down = (x + len(Z[x]) - 1) % len(Z[x])
@@ -24,11 +25,11 @@ def convolution(Z, x, y):
         count = count + 1
 
     if Z[down][left] == 1:
-        count = count + 1
+        count = count - 3
     if Z[down][y] == 1:
         count = count + 1
     if Z[down][right] == 1:
-        count = count + 1
+        count = count - 1
 
     return count
 
@@ -51,53 +52,10 @@ def update(Z, t):
             idx_left = (col + len(Z) - 1) % len(Z)
             
             if Z[row][col] == 0:
-                '''
-                count = 0
-                if Z[idx_up][idx_left] == 1:
-                    count = count + 1
-                if Z[idx_up][col] == 1:
-                    count = count + 1
-                if Z[idx_up][idx_right] == 1:
-                    count = count + 1
-
-                if Z[row][idx_left] == 1:
-                    count = count + 1
-                if Z[row][idx_right] == 1:
-                    count = count + 1
-
-                if Z[idx_down][idx_left] == 1:
-                    count = count + 1
-                if Z[idx_down][col] == 1:
-                    count = count + 1
-                if Z[idx_down][idx_right] == 1:
-                    count = count + 1
-                
-
-                count2 = 0
-                if Z[idx_up][idx_left] == 3:
-                    count2 = count2 + 1
-                if Z[idx_up][col] == 3:
-                    count2 = count2 + 1
-                if Z[idx_up][idx_right] == 3:
-                    count2 = count2 + 1
-
-                if Z[row][idx_left] == 3:
-                    count2 = count2 + 1
-                if Z[col][idx_right] == 3:
-                    count2 = count2 + 1
-
-                if Z[idx_down][idx_left] == 3:
-                    count2 = count2 + 1
-                if Z[idx_down][col] == 3:
-                    count2 = count2 + 1
-                if Z[idx_down][idx_right] == 3:
-                    count2 = count2 + 1
-                '''
-
                 count = convolution(Z, row, col)
                 count2 = 0
 
-                if count >= 2 or count2 >= 3:
+                if count >= 1 or count2 >= 3:
                     newZ[row][col] = 1
             elif Z[row][col] == 1:
                 newZ[row][col] = 2
@@ -108,15 +66,26 @@ def update(Z, t):
             
 
     return newZ
+'''
 
 x = 50
 y = 50
 Z = np.zeros((x, y))
+
+'''
+for i in range(int(len(Z)/2), len(Z)):
+    Z[25][i] = 1
+'''
 Z[10][10] = 1
 Z[10][11] = 1
 Z[11][10] = 1
 Z[11][11] = 1
-
+'''
+Z[39][29] = 1
+Z[10][11] = 1
+Z[11][10] = 1
+Z[11][11] = 1
+'''
 print(Z)
 
 fig, ax = plt.subplots()
