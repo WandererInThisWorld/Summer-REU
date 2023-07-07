@@ -1,12 +1,10 @@
 import numpy as np
 from numpy.fft import fft, ifft
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm 
-import matplotlib as mlp
 
-N = 128
+N = 256
 
-x = 32*np.pi*np.array([i for i in range(1, N + 1)])/N
+x = 32*np.pi*np.array([i for i in range(-int(N/2), int(N/2))])/N
 '''
 u = []
 for idx in range(len(x)):
@@ -18,10 +16,10 @@ u = np.array(u)#np.cos(x/16)
 '''
 
 u = np.exp(-x*x)
-u = np.exp(u) - 1
-u = np.exp(u) - 1
-u = np.exp(u/100) - 1
-u = u/10
+#u = np.exp(u) - 1
+#u = np.exp(u) - 1
+#u = np.exp(u/100) - 1
+#u = u/10
 
 v = fft(u)
 alpha = 1 - 1j

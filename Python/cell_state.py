@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from scipy.optimize import fsolve
 
-'''
+
 def convolution(Z, x, y):
     up = (x + len(Z[x]) + 1) % len(Z[x])
     down = (x + len(Z[x]) - 1) % len(Z[x])
@@ -66,7 +66,6 @@ def update(Z, t):
             
 
     return newZ
-'''
 
 x = 50
 y = 50
