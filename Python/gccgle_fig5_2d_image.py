@@ -1,9 +1,10 @@
 import numpy as np
 from numpy.fft import fft2, ifft2
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import time
 
-N = 256
+N = 128
 length = 125
 
 x = length*np.array([i for i in range(-int(N/2), int(N/2))])/N
@@ -85,17 +86,17 @@ count = 0
 
 tmax = 200
 nmax = np.round(tmax/h)
-nplt = np.floor((tmax/200)/h)
+nplt = np.floor((tmax/400)/h)
 
 
 for n in range(1, int(nmax) + 1):
-    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2 - g * mu * np.exp(1j*chi) * V[0][0]/(length**2))
+    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2 - g * mu * np.exp(1j*chi) * V[0][0]/(N**2))
     a = E2*V + Q*Nv
-    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2 - g * mu * np.exp(1j*chi) * a[0][0]/(length**2))
+    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2 - g * mu * np.exp(1j*chi) * a[0][0]/(N**2))
     b = E2*V + Q*Na
-    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2 - g * mu * np.exp(1j*chi) * b[0][0]/(length**2))
+    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2 - g * mu * np.exp(1j*chi) * b[0][0]/(N**2))
     c = E2*a + Q*(2*Nb-Nv)
-    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2 - g * mu * np.exp(1j*chi) * c[0][0]/(length**2))
+    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2 - g * mu * np.exp(1j*chi) * c[0][0]/(N**2))
     V = E*V + Nv*f1 + 2*(Na+Nb)*f2 + Nc*f3
 
     if n % nplt == 0:
@@ -111,6 +112,7 @@ for n in range(1, int(nmax) + 1):
 fig, ax = plt.subplots()
 ax.axis('off')
 ax.pcolormesh(X, Y, U)
+
 
 nX, nT = np.meshgrid(tt, x)
 hor = np.array(hor).T

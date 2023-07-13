@@ -21,9 +21,10 @@ V2 = fft2(U).imag
 alpha = -0.5
 beta = 0
 sigma = 1.6
-omega = 0.6 * np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) + 1
+omega = -0.8 * np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) + 1
 
-h = 0.01
+
+h = 0.1
 
 bk = [i for i in range(0, int(N/2))]
 bk[len(bk):] = [0]
@@ -117,7 +118,7 @@ L = np.reshape(L, (size, size))
 
 tmax = 300
 nmax = np.round(tmax/h)
-nplt = np.floor((tmax/200)/h)
+nplt = np.floor((tmax/400)/h)
 print(nplt)
 tt = []
 hor = []

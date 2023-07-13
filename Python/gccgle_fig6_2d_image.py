@@ -22,7 +22,7 @@ sigma = 3
 omega = 0.8 * np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) + 0.5
 mu = 0.6
 chi = 1.7*np.pi
-g = 1 - np.exp(-(X*X+Y*Y)/(2*sigma*sigma))# for heterogeneity that locally disrupts global coupling
+g = 1 #- np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) # for heterogeneity that locally disrupts global coupling
 h = 0.1
 
 
@@ -80,19 +80,19 @@ tt = []
 hor = []
 count = 0
 
-tmax = 75
+tmax = 100
 nmax = np.round(tmax/h)
-nplt = np.floor((tmax/200)/h)
+nplt = np.floor((tmax/400)/h)
 
 
 for n in range(1, int(nmax) + 1):
-    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2 - mu * np.exp(1j*chi) * V[0][0]/(length**2) * g)
+    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2 - mu * np.exp(1j*chi) * V[0][0]/(N**2) * g)
     a = E2*V + Q*Nv
-    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2 - mu * np.exp(1j*chi) * a[0][0]/(length**2) * g)
+    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2 - mu * np.exp(1j*chi) * a[0][0]/(N**2) * g)
     b = E2*V + Q*Na
-    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2 - mu * np.exp(1j*chi) * b[0][0]/(length**2) * g)
+    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2 - mu * np.exp(1j*chi) * b[0][0]/(N**2) * g)
     c = E2*a + Q*(2*Nb-Nv)
-    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2 - mu * np.exp(1j*chi) * c[0][0]/(length**2) * g)
+    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2 - mu * np.exp(1j*chi) * c[0][0]/(N**2) * g)
     V = E*V + Nv*f1 + 2*(Na+Nb)*f2 + Nc*f3
 
     if n % nplt == 0:
@@ -112,11 +112,11 @@ ax.pcolormesh(X, Y, U)
 
 print(mu * np.exp(1j*chi))
 
-tt = tt[15:]
+tt = tt
 
 nX, nT = np.meshgrid(tt, x)
 hor = np.array(hor)
-hor = hor[15:].T
+hor = hor.T
 print(np.shape(nX))
 print(np.shape(nT))
 print(np.shape(hor))

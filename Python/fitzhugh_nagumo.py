@@ -13,11 +13,11 @@ fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()
 fig3, ax3 = plt.subplots()
 
-x = np.linspace(-2, 2, num=10)
-y = np.linspace(-2, 2, num=10)
+x = np.linspace(-2, 2, num=2)
+y = np.linspace(-2, 2, num=2)
 X, Y = np.meshgrid(x, y)
 a = 3
-b = a/np.sqrt(3) - 0.1
+b = a/np.sqrt(3) - 0.8
 mu = 1
 xdot = f1(X,Y, mu)
 ydot = f2(X,Y,a,b)
@@ -36,7 +36,7 @@ for row in range(len(X)):
         path_x = [x0]
         path_y = [y0]
 
-        for idx in range(int(70/dt)):
+        for idx in range(int(100/dt)):
             dx = 0.01 * f1(path_x[-1], path_y[-1], mu)
             dy = 0.01 * f2(path_x[-1], path_y[-1], a, b)
             path_x.append(path_x[-1] + dx)
@@ -49,8 +49,8 @@ for path in paths:
     ax3.plot(path_x, path_y)
 
 
-ax1.quiver(X, Y, xdot, ydot)
-ax2.pcolormesh(X, Y, xdot + 1/2 * ydot)
+#ax1.quiver(X, Y, xdot, ydot)
+#ax2.pcolormesh(X, Y, xdot + ydot)
 
 # draw
 

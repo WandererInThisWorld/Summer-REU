@@ -7,3 +7,4 @@ V = 0*X + -1*Y;
 figure(1)
 quiver(X,Y,U./sqrt(U.^2+V.^2),V./sqrt(U.^2+V.^2))
 hold on
+

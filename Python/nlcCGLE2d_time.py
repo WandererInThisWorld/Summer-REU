@@ -22,33 +22,36 @@ beta = 2
 sigma = 15
 omega = -0.4 * np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) + 0
 mu = 0.3
-chi = np.ones(np.shape(X)) * np.pi
-g = np.exp(-(X*X+Y*Y)/(2*sigma*sigma))# for heterogeneity that locally disrupts global coupling
-h = 1/4
+chi = np.pi
+delta = 0.0001
+g = np.exp(-(X*X+Y*Y)/(delta*delta))# for heterogeneity that locally disrupts global coupling
+h = 0.1
 
 bk = [i for i in range(0, int(N/2))]
 bk[len(bk):] = [0]
 bk[len(bk):] = [i for i in range(int(-N/2) + 1, 0)]
+bk = np.array(bk)
 kx, ky = np.meshgrid(np.array(bk)*2*np.pi/length, np.array(bk)*2*np.pi/length)
 #kx = np.array(bk)/16
 #ky = np.array(bk)/16
 
-
-L = -(kx*kx + ky*ky)
+L = -(kx*kx + ky*ky) * (1 + 1j*beta)
 
 E = np.exp(h*L)
 E2 = np.exp(h*L/2)
 
 M = 16
+
+print(bk.shape)
+print(len(bk))
+L = np.reshape(L, len(bk)*len(bk))
+
 r = np.exp(1j * np.pi * ((np.array([i for i in range(1, M+1)]))-0.5)/M)
 
 newL = np.array([L for i in range(0,M)])
 newL = np.transpose(newL)
-newr = np.array([r for i in range(0, N)])
-LR = []
-for i in range(len(newL)):
-    LR.append(h*newL[i] + newr)
-#LR = h*newL + newr
+newr = np.array([r for i in range(0, N*N)])
+LR = h*newL + newr
 LR = np.array(LR)
 
 print(np.shape(newL))
@@ -57,29 +60,23 @@ print(np.shape(LR))
 
 
 tQ = (np.exp(LR/2) - 1)/LR
-
-Q = []
-for row in tQ:
-    Q.append(h * np.mean(row).real)
-Q = np.array(Q)
+Q = h*np.mean(tQ, axis=1).real
 
 tf1 = (-4-LR+np.exp(LR)*(4-3*LR+LR**2))/(LR**3)
-f1 = []
-for row in tf1:
-    f1.append(h * np.mean(row).real)
-f1 = np.array(f1)
+f1 = h*np.mean(tf1, axis=1).real
 
 tf2 = (2+LR+np.exp(LR)*(-2+LR))/(LR**3)
-f2 = []
-for row in tf2:
-    f2.append(h * np.mean(row).real)
-f2 = np.array(f2)
+f2 = h*np.mean(tf2, axis=1).real
 
 tf3 = (-4-3*LR-LR**2+np.exp(LR)*(4-LR))/(LR**3)
-f3 = []
-for row in tf3:
-    f3.append(h * np.mean(row).real)
-f3 = np.array(f3)
+f3 = h*np.mean(tf3, axis=1).real
+
+size = len(bk)
+Q = np.reshape(Q, (size, size))
+f1 = np.reshape(f1, (size, size))
+f2 = np.reshape(f2, (size, size))
+f3 = np.reshape(f3, (size, size))
+L = np.reshape(L, (size, size))
 
 
 fig, ax = plt.subplots()
@@ -100,16 +97,14 @@ def animate(i):
     print(t - t0, '\t', count)
     t = t0
 
-    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2) + fft2(mu * np.exp(1j*chi) * V[0][0]/(length**2)) * g - V
+    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2) + (mu * np.exp(1j*chi) * V) * g# - V
     a = E2*V + Q*Nv
-    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2) + fft2(mu * np.exp(1j*chi) * a[0][0]/(length**2)) * g - a
+    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2) + (mu * np.exp(1j*chi) * a) * g
     b = E2*V + Q*Na
-    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2) + fft2(mu * np.exp(1j*chi) * b[0][0]/(length**2)) * g - b
+    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2) + (mu * np.exp(1j*chi) * b) * g
     c = E2*a + Q*(2*Nb-Nv)
-    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2) + fft2(mu * np.exp(1j*chi) * c[0][0]/(length**2)) * g - c
+    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2) + (mu * np.exp(1j*chi) * c) * g
     V = E*V + Nv*f1 + 2*(Na+Nb)*f2 + Nc*f3
-    U = ifft2(V).real
-
     plot = ax.imshow(U)
     return plot
 
