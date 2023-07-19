@@ -22,7 +22,7 @@ sigma = 10
 omega = 0.8 * np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) + 0
 mu = 0.5
 chi = 0.65*np.pi
-g = 1 #- np.exp(-(X*X+Y*Y)/(2*sigma*sigma))# for heterogeneity that locally disrupts global coupling
+g = 1 #- np.exp(-(X*X+Y*Y)/(2*sigma*sigma))
 h = 0.1
 
 bk = [i for i in range(0, int(N/2))]
@@ -121,14 +121,4 @@ ax2.pcolormesh(nX, nT, hor)
 
 plt.show()
 
-'''
-temp = open("data.txt", "w")
-for newl in U:
-    string = ''
-    for e in newl:
-        string += str(e) + '\t'
-    string += '\n'
-    temp.write(string)
-temp.close()
-'''
 

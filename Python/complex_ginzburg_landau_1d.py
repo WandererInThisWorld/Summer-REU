@@ -2,7 +2,7 @@ import numpy as np
 from numpy.fft import fft, ifft
 import matplotlib.pyplot as plt
 
-N = 256
+N = 1024
 
 x = 32*np.pi*np.array([i for i in range(-int(N/2), int(N/2))])/N
 '''
@@ -74,7 +74,7 @@ f3 = np.array(f3)
 # main loop
 uu = [u]
 tt = [0]
-tmax = 150
+tmax = 100
 nmax = np.round(tmax/h)
 nplt = 1#np.floor((tmax/100)/h)
 

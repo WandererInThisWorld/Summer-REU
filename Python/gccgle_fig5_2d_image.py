@@ -125,14 +125,4 @@ ax2.pcolormesh(nX, nT, hor)
 
 plt.show()
 
-'''
-temp = open("data.txt", "w")
-for newl in U:
-    string = ''
-    for e in newl:
-        string += str(e) + '\t'
-    string += '\n'
-    temp.write(string)
-temp.close()
-'''
 

@@ -18,10 +18,10 @@ U = np.ones(np.shape(X))
 V = fft2(U)
 alpha = 0.970983543414647
 beta = 1.0013267791463547
-omega = 0.5719329259465489 * np.exp(-(X*X+Y*Y)) -0.5946035575013606
+omega = 0.5719329259465489 * np.exp(-(X*X+Y*Y)/50) - 0.5946035575013606
 mu = 0.5719329259465489
-chi = np.pi / 2
-g = np.exp(-(X**2 + Y**2)/50)
+chi = -np.pi / 2
+g = 1#np.exp(-(X**2 + Y**2)/50)
 h = 0.1
 
 
@@ -31,8 +31,7 @@ bk[len(bk):] = [i for i in range(int(-N/2) + 1, 0)]
 bk = np.array(bk)
 kx, ky = np.meshgrid(np.array(bk)*2*np.pi/length, np.array(bk)*2*np.pi/length)
 
-L = -(kx*kx + ky*ky) * (1 + 1j*beta)
-g2 = np.exp(-(kx*kx + ky*ky))
+g2 = np.exp(-(kx**4 + ky**4))
 L = -(kx*kx + ky*ky) * (1 + 1j*beta) - mu * np.exp(1j * chi) * g2
 
 

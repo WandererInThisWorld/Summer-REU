@@ -90,7 +90,7 @@ t = time.time()
 count = 0
 
 def animate(i):
-    global Z, V, U, E2, Q, E, f1, f2, f3, t, count
+    global V, U, E2, Q, E, f1, f2, f3, t, count
 
     t0 = time.time()
     count += 1
@@ -113,13 +113,3 @@ def animate(i):
 anim = FuncAnimation(fig, animate, init_func=init, blit=False, save_count=500, cache_frame_data=False)
 #anim.save('gccgleonepeak.gif')
 plt.show()
-
-
-temp = open("data.txt", "w")
-for newl in U:
-    string = ''
-    for e in newl:
-        string += str(e) + '\t'
-    string += '\n'
-    temp.write(string)
-temp.close()

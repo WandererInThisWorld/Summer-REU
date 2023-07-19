@@ -2,7 +2,7 @@ import numpy as np
 from numpy.fft import fft2, ifft2
 import matplotlib.pyplot as plt
 
-N = 256
+N = 512
 length = 100
 
 x = length*np.array([i for i in range(-int(N/2), int(N/2))])/N
@@ -18,7 +18,7 @@ U = np.ones(np.shape(X))
 V = fft2(U)
 V1 = fft2(U).real
 V2 = fft2(U).imag
-alpha = -0.5
+alpha = 2.5
 beta = 0
 sigma = 1.6
 omega = -0.8 * np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) + 1
@@ -34,43 +34,6 @@ kx, ky = np.meshgrid(np.array(bk)*2*np.pi/length, np.array(bk)*2*np.pi/length)
 #kx = np.array(bk)/16
 #ky = np.array(bk)/16
 
-'''
-L = -kx*kx - ky*ky
-E = np.exp(h*L)
-E2 = np.exp(h*L/2)
-
-M = 16
-r = np.exp(1j * np.pi * ((np.array([i for i in range(1, M+1)]))-0.5)/M)
-
-newL = np.array([L for i in range(0,M)])
-newL = np.transpose(newL)
-newr = np.array([r for i in range(0, N)])
-LR = h*newL + newr
-
-tQ = (np.exp(LR/2) - 1)/LR
-Q = []
-for row in tQ:
-    Q.append(h * np.mean(row).real)
-Q = np.array(Q)
-
-tf1 = (-4-LR+np.exp(LR)*(4-3*LR+LR**2))/(LR**3)
-f1 = []
-for row in tf1:
-    f1.append(h * np.mean(row).real)
-f1 = np.array(f1)
-
-tf2 = (2+LR+np.exp(LR)*(-2+LR))/(LR**3)
-f2 = []
-for row in tf2:
-    f2.append(h * np.mean(row).real)
-f2 = np.array(f2)
-
-tf3 = (-4-3*LR-LR**2+np.exp(LR)*(4-LR))/(LR**3)
-f3 = []
-for row in tf3:
-    f3.append(h * np.mean(row).real)
-f3 = np.array(f3)
-'''
 L = -(kx*kx + ky*ky) * (1 + 1j*beta)
 
 E = np.exp(h*L)
@@ -116,7 +79,7 @@ L = np.reshape(L, (size, size))
 
 
 
-tmax = 300
+tmax = 100
 nmax = np.round(tmax/h)
 nplt = np.floor((tmax/400)/h)
 print(nplt)

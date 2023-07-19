@@ -112,12 +112,3 @@ anim = FuncAnimation(fig, animate, init_func=init, blit=False, save_count=500, c
 #anim.save('mod_nlccgleonepeak_ones.gif')
 plt.show()
 
-
-temp = open("data.txt", "w")
-for newl in U:
-    string = ''
-    for e in newl:
-        string += str(e) + '\t'
-    string += '\n'
-    temp.write(string)
-temp.close()

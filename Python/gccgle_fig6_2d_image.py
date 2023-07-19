@@ -22,7 +22,7 @@ sigma = 3
 omega = 0.8 * np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) + 0.5
 mu = 0.6
 chi = 1.7*np.pi
-g = 1 #- np.exp(-(X*X+Y*Y)/(2*sigma*sigma)) # for heterogeneity that locally disrupts global coupling
+g = 1 #- np.exp(-(X*X+Y*Y)/(2*sigma*sigma))
 h = 0.1
 
 
@@ -99,7 +99,7 @@ for n in range(1, int(nmax) + 1):
         t = n*h
         tt.append(t)
         U = ifft2(V).real
-        hor.append(U[int(len(U)/2)]) #[int(len(U)/2) - 10: int(len(U)/2) + 10]
+        hor.append(U[int(len(U)/2)])
 
 
     count += 1
@@ -125,15 +125,3 @@ fig2, ax2 = plt.subplots()
 ax2.pcolormesh(nX, nT, hor)
 
 plt.show()
-
-'''
-temp = open("data.txt", "w")
-for newl in U:
-    string = ''
-    for e in newl:
-        string += str(e) + '\t'
-    string += '\n'
-    temp.write(string)
-temp.close()
-'''
-
