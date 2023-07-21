@@ -14,11 +14,12 @@ a = 2
 b = 0.2
 sigma = (4/3)*(1/np.sqrt(a))
 
-b1 = -0.5
-b2 = 0.5
+b1 = -0.1
+b2 = 0.1
 c1 = 0
-c2 = 1.5
-d2 = 2.75
+c2 = 0.5
+d2 = 0
+d3 = 0
 
 alpha = (4/3)*(1/np.sqrt(a*sigma))
 beta = d2/(2*np.sqrt(a*sigma))

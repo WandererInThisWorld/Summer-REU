@@ -88,7 +88,6 @@ tmax = 200
 nmax = np.round(tmax/h)
 nplt = np.floor((tmax/400)/h)
 
-
 for n in range(1, int(nmax) + 1):
     Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2 - g * mu * np.exp(1j*chi) * V[0][0]/(N**2))
     a = E2*V + Q*Nv
@@ -104,7 +103,6 @@ for n in range(1, int(nmax) + 1):
         tt.append(t)
         U = ifft2(V).real
         hor.append(U[int(len(U)/2)])
-
 
     count += 1
     print(count)

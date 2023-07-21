@@ -48,7 +48,7 @@ bk = np.array(bk)
 kx, ky = np.meshgrid(np.array(bk)*2*np.pi/length, np.array(bk)*2*np.pi/length)
 
 g2 = np.exp(-(kx*kx + ky*ky)/(delta*delta))
-L = -(kx*kx + ky*ky) * (1 + 1j*beta) - mu * np.exp(1j * chi) * g2
+L = -(kx*kx + ky*ky) * (1 + 1j*beta) #- mu * np.exp(1j * chi) * g2
 
 E = np.exp(h*L)
 E2 = np.exp(h*L/2)

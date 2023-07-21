@@ -12,12 +12,13 @@ def weirdexp(X, Y, sigma):
     for i in range(len(X)):
         for j in range(len(X[i])):
             if X[i][j]**2 + Y[i][j]**2 > 100:
-                fill[i][j] = np.exp(-(X[i][j]**2 + Y[i][j]**2)/(2*sigma*sigma))
+                fill[i][j] = np.exp(np.exp(-(X[i][j]**2 + Y[i][j]**2)/(2*sigma*sigma)))
             else:
-                fill[i][j] = np.exp(-(X[i][j]**2 + Y[i][j]**2)/(2*sigma*sigma)) * np.cos(100*abs(X[i][j]) + 100*abs(Y[i][j]))
+                fill[i][j] = np.exp(np.exp(-(X[i][j]**2 + Y[i][j]**2)/(2*sigma*sigma))) * np.cos(100*abs(X[i][j]) + 100*abs(Y[i][j]))
+    #fill = np.exp(np.exp(-(X**2 + Y**2)/(2*sigma*sigma))) -1
     return fill
 
-N = 512
+N = 256
 length = 200
 
 x = length*np.array([i for i in range(-int(N/2), int(N/2))])/N
@@ -29,18 +30,21 @@ X, Y = np.meshgrid(x, y)
 #U = np.cos(np.sqrt(X*X + Y*Y))
 U = np.ones(np.shape(X))
 
+
 V = fft2(U)
-alpha = -1
+alpha = 1
 beta = 2
-sigma = 50
-omega = -0.8 * weirdexp(X, Y, sigma) + 1 #np.exp(-(X*X+Y*Y)/(2*sigma*sigma))
-mu = 0.3
-chi = np.pi
+sigma = 15
+omega = -0.4 * weirdexp(X, Y, sigma) + 0 #0.4*np.exp(-(X**2 + Y**2)/(2*sigma*sigma)) + 0.0
+mu = 0.6
+chi = np.pi*1.7
+g = 1
+
+
 
 # between 0.2 and 0.25 at N=256, localized target patters
 # between 0.1 and 0.15 at N=128, localized target patterns (very small)
 delta = 1
-#g = fft2(np.exp(-(X*X+Y*Y)*(delta*delta)))
 
 h = 0.1
 
@@ -50,8 +54,9 @@ bk[len(bk):] = [i for i in range(int(-N/2) + 1, 0)]
 bk = np.array(bk)
 kx, ky = np.meshgrid(np.array(bk)*2*np.pi/length, np.array(bk)*2*np.pi/length)
 
-g2 = np.exp(-(kx*kx + ky*ky)/(delta*delta))
-L = -(kx*kx + ky*ky) * (1 + 1j*beta) - mu * np.exp(1j * chi) * g2
+g2 = weirdexp(kx, ky, delta)
+g2 = 1/(N**2) #np.exp(-(kx**2 + ky**2)/(delta**2))
+L = -(kx*kx + ky*ky) * (1 + 1j*beta) #- mu * np.exp(1j * chi) * g2
 
 E = np.exp(h*L)
 E2 = np.exp(h*L/2)
@@ -100,20 +105,19 @@ tt = []
 hor = []
 count = 0
 
-tmax = 200
+tmax = 100
 nmax = np.round(tmax/h)
 nplt = np.floor((tmax/800)/h)
 
-
 for n in range(1, int(nmax) + 1):
     np.mean(ifft2(V))
-    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2)# + (mu * np.exp(1j*chi) * V) * g# - V
+    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2 - (mu * np.exp(1j*chi) * V[0][0])/(N**2) * g)# - V
     a = E2*V + Q*Nv
-    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2)# + (mu * np.exp(1j*chi) * a) * g
+    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2 - (mu * np.exp(1j*chi) * a[0][0])/(N**2) * g)
     b = E2*V + Q*Na
-    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2)# + (mu * np.exp(1j*chi) * b) * g
+    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2 - (mu * np.exp(1j*chi) * b[0][0])/(N**2) * g)
     c = E2*a + Q*(2*Nb-Nv)
-    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2)# + (mu * np.exp(1j*chi) * c) * g
+    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2 - (mu * np.exp(1j*chi) * c[0][0])/(N**2) * g)
     V = E*V + Nv*f1 + 2*(Na+Nb)*f2 + Nc*f3
 
     if n % nplt == 0:
@@ -121,6 +125,7 @@ for n in range(1, int(nmax) + 1):
         tt.append(t)
         U = ifft2(V).real
         hor.append(U[int(len(U)/2 - 10)])
+
 
     count += 1
     print(count)

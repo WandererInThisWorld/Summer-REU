@@ -10,20 +10,20 @@ x = length*np.array([i for i in range(-int(N/2), int(N/2))])/N
 y = length*np.array([i for i in range(-int(N/2), int(N/2))])/N
 X, Y = np.meshgrid(x, y)
 
-#U = np.exp(-((X-0)**2 + (Y-0)**2))# + np.exp(-((X+20)**2 + (Y+0)**2))
-#U = np.exp(U) - 1
-#U = np.cos(np.sqrt(X*X + Y*Y))
+alpha = 4.2164 #0.970983543414647
+beta = 0 #1.0013267791463547
+omega = -alpha #0.5719329259465489 * np.exp(-(X*X+Y*Y)/50) - 0.5946035575013606
+dw = -0.0456*9
+Rez = 0
+Imz = -0.01
+z = 3.8 * (Rez + 1j * Imz)
+mu = abs(z)
+chi = np.log(z)
+g = dw * np.exp(-(X**2 + Y**2))
+h = 0.01
+
 U = np.ones(np.shape(X))
-
 V = fft2(U)
-alpha = 0.970983543414647
-beta = 1.0013267791463547
-omega = 0.5719329259465489 * np.exp(-(X*X+Y*Y)/50) - 0.5946035575013606
-mu = 0.5719329259465489
-chi = -np.pi / 2
-g = 1#np.exp(-(X**2 + Y**2)/50)
-h = 0.1
-
 
 bk = [i for i in range(0, int(N/2))]
 bk[len(bk):] = [0]
@@ -31,9 +31,9 @@ bk[len(bk):] = [i for i in range(int(-N/2) + 1, 0)]
 bk = np.array(bk)
 kx, ky = np.meshgrid(np.array(bk)*2*np.pi/length, np.array(bk)*2*np.pi/length)
 
-g2 = np.exp(-(kx**4 + ky**4))
-L = -(kx*kx + ky*ky) * (1 + 1j*beta) - mu * np.exp(1j * chi) * g2
-
+L = -(kx*kx + ky*ky) * (1 + 1j*beta) + (1 - 1j*omega)
+Nonl = - mu * np.exp(1j * chi) * np.exp(-(kx**2 + ky**2)*1000)
+L = L + Nonl
 
 E = np.exp(h*L)
 E2 = np.exp(h*L/2)
@@ -81,19 +81,19 @@ tt = []
 hor = []
 count = 0
 
-tmax = 100
+tmax = 51
 nmax = np.round(tmax/h)
 nplt = np.floor((tmax/400)/h)
-
+frame = []
 
 for n in range(1, int(nmax) + 1):
-    Nv = fft2((1 - 1j*omega) * ifft2(V) - (1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2 - mu * np.exp(1j*chi) * V[0][0]/(N**2) * g)
+    Nv = fft2(-(1 + 1j*alpha)*ifft2(V)*abs(ifft2(V))**2) - fft2(1j * g * ifft2(V))
     a = E2*V + Q*Nv
-    Na = fft2((1 - 1j*omega) * ifft2(a) - (1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2 - mu * np.exp(1j*chi) * a[0][0]/(N**2) * g)
+    Na = fft2(-(1 + 1j*alpha)*ifft2(a)*abs(ifft2(a))**2) - fft2(1j * g * ifft2(a))
     b = E2*V + Q*Na
-    Nb = fft2((1 - 1j*omega) * ifft2(b) - (1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2 - mu * np.exp(1j*chi) * b[0][0]/(N**2) * g)
+    Nb = fft2(-(1 + 1j*alpha)*ifft2(b)*abs(ifft2(b))**2) - fft2(1j * g * ifft2(b))
     c = E2*a + Q*(2*Nb-Nv)
-    Nc = fft2((1 - 1j*omega) * ifft2(c) - (1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2 - mu * np.exp(1j*chi) * c[0][0]/(N**2) * g)
+    Nc = fft2(-(1 + 1j*alpha)*ifft2(c)*abs(ifft2(c))**2) - fft2(1j * g * ifft2(c))
     V = E*V + Nv*f1 + 2*(Na+Nb)*f2 + Nc*f3
 
     if n % nplt == 0:
@@ -102,6 +102,8 @@ for n in range(1, int(nmax) + 1):
         U = ifft2(V).real
         hor.append(U[int(len(U)/2)])
 
+    if n*h < 12:
+        frame = ifft2(V).real
 
     count += 1
     print(count)
@@ -109,9 +111,10 @@ for n in range(1, int(nmax) + 1):
 fig, ax = plt.subplots()
 ax.axis('off')
 U = ifft2(V).real
-ax.pcolormesh(X, Y, U)
+ax.pcolormesh(X, Y, frame)
 
-print(mu * np.exp(1j*chi))
+print(mu)
+print(chi)
 
 tt = tt
 
